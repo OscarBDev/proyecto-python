@@ -8,12 +8,30 @@ import tensorflow_hub as hub
 from keras.utils import get_custom_objects
 #IMPOTAMOS LA CLAVE SECRETA
 from config import SECRET_KEY
+#base de datos
+from flask_sqlalchemy import SQLAlchemy
 
 #inicializamos flask
 app = Flask(__name__)
 
 #establecemos una clave secerta para las sesiones 
 app.secret_key = SECRET_KEY
+
+#configuramos la conexion a mysql 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/ollas'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+#iniciamos la base de datos
+db = SQLAlchemy(app)
+
+#definimos el modelo de nuestra tabla
+class Productos(db.Model):
+    __tablename__ = 'ollas'
+    ID_OLLAS = db.Column(db.Integer, primary_key=True)
+    NOMBRE = db.Column(db.String(30), nullable=False)
+    MEDIDA = db.Column(db.String(8), nullable=False)
+    IMAGEN = db.Column(db.String(255), nullable=False)
+    
 
 class CustomMobileNetV2(tf.keras.layers.Layer):
     def __init__(self, trainable=True, **kwargs):
@@ -48,10 +66,11 @@ def preprocess_image(image_path):
     img = np.expand_dims(img, axis=0)
     return img
 
-#cargamos la pagina atraves de una ruta 
+#cargamos la pagina atraves de una ruta llevamos datos de la base de datos tambien
 @app.route('/')
 def home():
-    return render_template('index.html')
+    ollas_lista = Productos.query.all()
+    return render_template('index.html', ollas = ollas_lista)
 
 #por aqui se enviara la prediccion de la imagen subida 
 @app.route('/predict', methods=['POST'])
