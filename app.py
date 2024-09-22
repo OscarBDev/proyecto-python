@@ -6,10 +6,11 @@ import cv2
 #capa presonalizada
 import tensorflow_hub as hub 
 from keras.utils import get_custom_objects
-#IMPOTAMOS LA CLAVE SECRETA
+#IMPORTAMOS LA CLAVE SECRETA
 from config import SECRET_KEY
 #base de datos
 from flask_sqlalchemy import SQLAlchemy
+#importamos el modelo
 
 #inicializamos flask
 app = Flask(__name__)
@@ -24,13 +25,26 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 #iniciamos la base de datos
 db = SQLAlchemy(app)
 
-#definimos el modelo de nuestra tabla
+#definimos el modelo de nuestras tablaa
+#aqui usamos producto y no olla por que es confuso
 class Productos(db.Model):
     __tablename__ = 'ollas'
     ID_OLLAS = db.Column(db.Integer, primary_key=True)
+    IMAGEN = db.Column(db.LargeBinary)  # Cambié a LargeBinary para almacenar imágenes
     NOMBRE = db.Column(db.String(30), nullable=False)
-    MEDIDA = db.Column(db.String(8), nullable=False)
-    IMAGEN = db.Column(db.String(255), nullable=False)
+    COMENSALES = db.Column(db.Integer)
+    CAPACIDAD = db.Column(db.String(5))
+    COLOR = db.Column(db.String(15))
+    MEDIDA = db.Column(db.String(8))
+    STOCK = db.Column(db.Integer)
+    PRECIO_UNITARIO = db.Column(db.Numeric(10, 2))
+    ID_CATEGORIA = db.Column(db.Integer, db.ForeignKey('CATEGORIA.ID_CATEGORIA'))
+    categoria = db.relationship('Categoria', backref='ollas')  # Relación con CATEGORIA
+
+class Categoria(db.Model):
+    __tablename__ = 'CATEGORIA'
+    ID_CATEGORIA = db.Column(db.Integer, primary_key=True)
+    NOMBRE = db.Column(db.String(30), nullable=False)
     
 
 class CustomMobileNetV2(tf.keras.layers.Layer):
@@ -56,6 +70,15 @@ etiquetas_clase = {
     3: "Sartén",
     4: "Wok"
 }
+#etiquetas con las etiquteas de las categorias
+etiquetas_clase_inv = {
+    "Asador": 1,  
+    "Cacerola": 2,
+    "Olla presión": 3,
+    "Sartén": 4,
+    "Wok": 5
+}
+
 
 #procesamos la imagen para el modelo
 def preprocess_image(image_path):
@@ -83,7 +106,7 @@ def predict():
     if file:
         
         #Guardar y proprocesar la imagen
-        img_path = './uploaded_images/' + file.filename
+        img_path = './static/uploaded_images/' + file.filename
         file.save(img_path)
         img = preprocess_image(img_path)
         
@@ -96,6 +119,7 @@ def predict():
         
         #guardamos la prediccion en la sesion
         session['prediccion'] = etiqueta
+        session['ruta_imagen'] = img_path  # Guarda la ruta de la imagen
         
         #redirigimos a la pagina de el resultado
         return redirect(url_for('resultado'))
@@ -104,7 +128,15 @@ def predict():
 @app.route('/resultado', methods=['GET'])
 def resultado():
     prediccion = session.get('prediccion', 'No hay prediccion disponible.')
-    return render_template('resultado.html', prediccion=prediccion)
+    ruta_imagen = session.get('ruta_imagen') # ruta de la imagen cargada
+    
+    # Obtener el ID_CATEGORIA basado en la etiqueta de clase predicha
+    id_categoria = etiquetas_clase_inv.get(prediccion)
+
+    # Consultar todos los productos que pertenecen a esa categoría
+    productos = Productos.query.filter_by(ID_CATEGORIA=id_categoria).all()
+     
+    return render_template('resultado.html', prediccion=prediccion, productos=productos, ruta_imagen=ruta_imagen)
     
 #ejecutamos
 if __name__ == '__main__':
