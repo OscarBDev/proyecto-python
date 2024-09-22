@@ -10,7 +10,9 @@ from keras.utils import get_custom_objects
 from config import SECRET_KEY
 #base de datos
 from flask_sqlalchemy import SQLAlchemy
-#importamos el modelo
+#para la tabla de categorias donde mostraremos un producto al azar
+from sqlalchemy.sql.expression import func
+
 
 #inicializamos flask
 app = Flask(__name__)
@@ -103,6 +105,23 @@ def productos():
     
     #enviamos estos datos a productos.html
     return render_template('productos.html', productos = productos)
+
+#mandamos los datos de la pbase de datos para la vista o el modelo de categorias.html
+@app.route('/categorias.html')
+def productos_por_categoria():
+    #obtenemos la todas las categorias
+    categorias = Categoria.query.all()
+    
+    #creamos un diccionario para almacenar un producto por categoria
+    productos_por_categoria = {}
+    
+    #Recorremos las categorias y seleccionamos un producto al azar 
+    for categoria in categorias:
+        producto_aleatorio = Productos.query.filter_by(ID_CATEGORIA=categoria.ID_CATEGORIA).order_by(func.rand()).first()
+        productos_por_categoria[categoria.NOMBRE] = producto_aleatorio
+        
+    #mostramos el categorias.html
+    return render_template('categorias.html', productos_por_categoria=productos_por_categoria)
 
 #por aqui se enviara la prediccion de la imagen subida 
 @app.route('/predict', methods=['POST'])
