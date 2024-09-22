@@ -1,4 +1,4 @@
-# Maching Learning, Flask and Data Base mySQL
+# Maching Learning, Flask and DataBase mySQL
 
 ## Getting Started
 
