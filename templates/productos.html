@@ -51,27 +51,10 @@
         </div>
       </div>
     </nav>
-    <!-- aqui va la prediccion -->
-    <div class="container mt-5 pt-5" style="margin-top: 10rem;">
-      <div class="row mt-4">
-        <div class="item features-image col-12 col-md-6 col-lg-4 mt-5">
-          <div class="item-wrapper m-4">
-            <div class="item-img mt-4">
-              <img src="{{ ruta_imagen }}" alt="imagen cargada" />
-            </div>
-            <div class="item-content mt-2">
-              <h5 class="item-subtitle mbr-fonts-style display-7">
-                <strong>La predicion fue: {{ prediccion }}</strong>
-              </h5>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <!-- boton de regreso a la pagina de inicio -->
-    <div class="container mt-5 col-sm">
-      <div class="row">
-        <a href="/" class="btn btn-dark btn-sm w-auto px-5 py-2">Volver</a>
+    <div class="container mt-5 pt-5 col-sm">
+      <div class="row mt-5 pt-5">
+        <a href="/" class="btn btn-dark btn-sm w-auto px-5 py-2 mt-3">Volver</a>
       </div>
     </div>
     <!-- aqui van los productos segun prediccion -->
@@ -90,7 +73,12 @@
               </h5>
               <h6 class="item-subtitle mbr-fonts-style display-7">
                 Bs {{ producto.PRECIO_UNITARIO }}
-                <!-- Muestra el precio -->
+              </h6>
+              <h6 class="item-subtitle mbr-fonts-style display-7">
+                Color: {{ producto.COLOR }}
+              </h6>
+              <h6 class="item-subtitle mbr-fonts-style display-7">
+                Capacidad: {{ producto.CAPACIDAD }}
               </h6>
               <p class="mbr-text mbr-fonts-style display-7">
                 Stock: {{ producto.STOCK }}
@@ -103,8 +91,6 @@
             </div>
           </div>
         </div>
-        {% else %}
-        <p>No hay productos disponibles para esta categoría.</p>
         {% endfor %}
       </div>
     </div>

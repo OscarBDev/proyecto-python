@@ -95,6 +95,15 @@ def home():
     ollas_lista = Productos.query.all()
     return render_template('index.html', ollas = ollas_lista)
 
+#mandamos todos los datos de productos a productos.html
+@app.route('/productos.html')
+def productos():
+    #consultamos todos los productos de la base de datos 
+    productos = Productos.query.all()
+    
+    #enviamos estos datos a productos.html
+    return render_template('productos.html', productos = productos)
+
 #por aqui se enviara la prediccion de la imagen subida 
 @app.route('/predict', methods=['POST'])
 def predict():
