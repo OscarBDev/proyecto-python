@@ -3,13 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clasificacion de ollas</title>
+    <title>Ollas Essen</title>
+    <!-- link de bootstrap -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
 </head>
 <body>
-    <h1>Sube una imagen </h1>
-    <form action="/predict" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*">
-        <button type="submit">Clasificar</button>
-    </form>
+
+    <!-- aqui va el nav menu hanburguesa de bootstrap -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top py-4">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="{{ url_for('static', filename='imagenes/iconnn.ico') }}" alt="Ollas Essen" style="height: 3.6rem;">
+                <h2>Ollas Essen</h2>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="productos.php">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categorias.php">Categorias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="mailto:for.all.today123@gmail.com">Contactanos</a>
+                    </li>
+                </ul>
+                <a class="btn btn-primary" href="registro.html">Registrate</a>
+            </div>
+        </div>
+    </nav>
+    <!-- aqui va el carrusel de imagenes traidas desde la base de datos -->
+    <div id="carouselExample" class="carousel slide mt-5" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="assets/images/placeholder.jpg" class="d-block w-100" alt="Placeholder">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5 class="text-dark">Nombre del producto</h5>
+                    <p class="text-dark">Medida del producto</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    <!-- aqui va la prediccion -->
+    <div class="container">
+        <div class="row justify-content-center align-items-center">
+            <!-- Imagen a la izquierda en pantallas grandes (lg) -->
+            <div class="col-lg-5 order-lg-1 mb-4 mb-lg-0"> 
+                <img class="w-100" src="{{ url_for('static', filename='imagenes/1.jpg') }}" alt="Ollas Essen">
+            </div>
+            <!-- Texto a la derecha en pantallas grandes (lg) -->
+            <div class="col-lg-7 order-lg-2">
+                <h1 class="mb-4">¿Olvidaste el nombre de un producto Essen?</h1>
+                <p class="mb-4">Alguna vez olvidaste el nombre de un producto, no te preocupes, si tienes la imagen del producto, puedes pasarla por acá, y te proporcionaremos información acerca del producto, según nuestros catálogos.</p>
+                <!-- aqui va la prediccion -->
+                <form action="/predict" class="form-control" method="post" enctype="multipart/form-data">
+                    <div class="row g-2">
+                        <div class="col-8">
+                            <input class="form-control" type="file" name="file" accept="image/*">
+                        </div>
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-dark w-100">Clasificar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- aqui va el footer pie de pagina -->
+    <footer class="container-fluid bg-dark text-white py-5 mt-3">
+        <div class="row">
+            <div class="col-12 col-lg-6 text-center">
+                <ul class="list-inline">
+                    <li class="list-inline-item"><a href="#" class="text-white">Instagram</a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white">TikTok</a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white">YouTube</a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white">Twitter</a></li>
+                </ul>
+            </div>
+            <div class="col-12 col-lg-6 text-center mt-2 mb-3">
+                <p class="mb-0">© Copyright 2024 Ollas Essen - All Rights Reserved</p>
+            </div>
+        </div>
+    </footer>    
+    <!-- script de bootstrap -->
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>
